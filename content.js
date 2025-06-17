@@ -26,16 +26,21 @@ function getAllImages() {
   return Array.from(uniqueImages.values());
 }
 
+
 // 监听来自popup的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('收到消息:', request.action);
+  
   if (request.action === 'getImages') {
     try {
-      sendResponse(getAllImages());
-      return true; // 保持消息通道开放
+      const images = getAllImages();
+      console.log('返回图片数据:', images.length);
+      sendResponse(images);
     } catch (e) {
       console.error('处理消息失败:', e);
       sendResponse({error: e.message});
     }
+    return true;
   }
-  return true;
+  return false;
 });
